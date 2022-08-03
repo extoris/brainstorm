@@ -6,7 +6,6 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 from aiogram.utils.executor import start_webhook
-from aiogram.dispatcher.webhook import SendMessage   
 
 from data.config import BOT_TOKEN, ADMINS, HEROKU_APP_NAME
 import logging
@@ -32,7 +31,6 @@ logger = logging.getLogger(__name__)
 #     """
 #     scheduler.add_job(time_cycle, "interval", seconds=60, args=(dp,))
 
-
 HEROKU = HEROKU_APP_NAME
 
 # webhook settings
@@ -50,15 +48,6 @@ async def on_startup(dispatcher):
 
 async def on_shutdown(dispatcher):
     await bot.delete_webhook()
-
-@dp.message_handler()
-async def echo(message: types.Message):
-    # Regular request
-    # await bot.send_message(message.chat.id, message.text)
-
-    # or reply INTO webhook
-    return SendMessage(message.chat.id, message.text)
-
 
 async def main():
     """
@@ -86,18 +75,29 @@ async def main():
 
 
 
-  
+
+    # start
+    try:
+        # scheduler.start()
+        # await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+        start_webhook(
+            dispatcher=dp,
+            webhook_path=WEBHOOK_PATH,
+            skip_updates=True,
+            on_startup=on_startup,
+            on_shutdown=on_shutdown,
+            host=WEBAPP_HOST,
+            port=WEBAPP_PORT,
+        )
+    finally:
+        await bot.delete_webhook()
+        await dp.storage.close()
+        await dp.storage.wait_closed()
+        await bot.session.close()   
 
 
 if __name__ == '__main__':
-    # asyncio.run(main())
-    # # start
-    start_webhook(
-        dispatcher=dp,
-        webhook_path=WEBHOOK_PATH,
-        skip_updates=True,
-        on_startup=on_startup,
-        on_shutdown=on_shutdown,
-        host=WEBAPP_HOST,
-        port=WEBAPP_PORT,
-    )
+    try:
+        asyncio.run(main())
+    except (KeyboardInterrupt, SystemExit):
+        logger.error("Bot stopped!")
