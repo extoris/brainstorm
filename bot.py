@@ -32,6 +32,25 @@ logger = logging.getLogger(__name__)
 #     scheduler.add_job(time_cycle, "interval", seconds=60, args=(dp,))
 
 
+HEROKU = HEROKU_APP_NAME
+
+# webhook settings
+WEBHOOK_HOST = f'https://{HEROKU}.herokuapp.com'
+WEBHOOK_PATH = f'/webhook/{token}'
+WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
+
+# webserver settings
+WEBAPP_HOST = '0.0.0.0'
+WEBAPP_PORT = os.getenv('PORT', default=8000)
+
+async def on_startup(dispatcher):
+    await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+
+
+async def on_shutdown(dispatcher):
+    await bot.delete_webhook()
+
+
 async def main():
     """
     await bot.delete_webhook(drop_pending_updates=True) - в новых версиях aiogram есть проблема, то что при запуске бота,
@@ -56,23 +75,6 @@ async def main():
     # Запуск полинга
     # await dp.start_polling()
 
-    HEROKU = HEROKU_APP_NAME
-
-    # webhook settings
-    WEBHOOK_HOST = f'https://{HEROKU}.herokuapp.com'
-    WEBHOOK_PATH = f'/webhook/{token}'
-    WEBHOOK_URL = f'{WEBHOOK_HOST}{WEBHOOK_PATH}'
-
-    # webserver settings
-    WEBAPP_HOST = '0.0.0.0'
-    WEBAPP_PORT = os.getenv('PORT', default=8000)
-
-    async def on_startup(dispatcher):
-        await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
-
-
-    async def on_shutdown(dispatcher):
-        await bot.delete_webhook()
 
 
     # start
