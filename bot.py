@@ -78,7 +78,7 @@ async def main():
     # start
     try:
         # scheduler.start()
-        # await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
+        await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
         start_webhook(
             dispatcher=dp,
             webhook_path=WEBHOOK_PATH,
