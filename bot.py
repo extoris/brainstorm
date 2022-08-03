@@ -5,6 +5,7 @@ import os
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import BotCommand
+from aiogram.utils.executor import start_webhook
 
 from data.config import BOT_TOKEN, ADMINS, HEROKU_APP_NAME
 import logging
