@@ -1,5 +1,6 @@
 import asyncio
 from distutils.command.config import config
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
