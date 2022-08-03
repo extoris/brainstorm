@@ -80,7 +80,6 @@ async def main():
     # start
     try:
         # scheduler.start()
-        await bot.set_webhook(WEBHOOK_URL, drop_pending_updates=True)
         start_webhook(
             dispatcher=dp,
             webhook_path=WEBHOOK_PATH,
@@ -100,5 +99,6 @@ async def main():
 if __name__ == '__main__':
     try:
         asyncio.run(main())
+        
     except (KeyboardInterrupt, SystemExit):
         logger.error("Bot stopped!")
