@@ -6,6 +6,7 @@ from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 from aiogram.utils.executor import start_webhook
+from aiogram.dispatcher.webhook import SendMessage   
 
 from data.config import BOT_TOKEN, ADMINS, HEROKU_APP_NAME
 import logging
@@ -50,6 +51,14 @@ async def on_startup(dispatcher):
 async def on_shutdown(dispatcher):
     await bot.delete_webhook()
 
+@dp.message_handler()
+async def echo(message: types.Message):
+    # Regular request
+    # await bot.send_message(message.chat.id, message.text)
+
+    # or reply INTO webhook
+    return SendMessage(message.chat.id, message.text)
+
 
 async def main():
     """
@@ -81,8 +90,8 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
-    # start
+    # asyncio.run(main())
+    # # start
     start_webhook(
         dispatcher=dp,
         webhook_path=WEBHOOK_PATH,
