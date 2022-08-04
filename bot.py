@@ -1,10 +1,13 @@
 import asyncio
+from distutils.command.config import config
+import os
 
 from aiogram import Bot, Dispatcher, executor, types
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import BotCommand
+from aiogram.utils.executor import start_webhook
 
-from data.config import BOT_TOKEN, ADMINS
+from data.config import BOT_TOKEN, ADMINS, HEROKU_APP_NAME
 import logging
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -12,11 +15,14 @@ from handlers.reg_all import reg_all_handlers
 from handlers.commands import set_commands
 from misc.admin import notify_admin
 
-bot = Bot(token=BOT_TOKEN, parse_mode=types.ParseMode.HTML)
+
+token = BOT_TOKEN
+bot = Bot(BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
 logging.basicConfig(level=logging.INFO)
 scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
 logger = logging.getLogger(__name__)
+
 
 
 # def timer_interval_func():
@@ -48,7 +54,13 @@ async def main():
     await notify_admin(dp)
 
     # Запуск полинга
-    await dp.start_polling()
+    try:
+        # disp = Dispatcher(bot=bot)
+        # disp.register_message_handler(start_handler, commands={"start", "restart"})
+        await dp.start_polling()
+    finally:
+        await bot.close()
+    
 
 
 if __name__ == '__main__':
