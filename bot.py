@@ -1,11 +1,13 @@
 import asyncio
 
 from aiogram import Bot, Dispatcher, executor, types
+from aiogram.utils.executor import start_webhook
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
 from aiogram.types import BotCommand
 
-from data.config import BOT_TOKEN, ADMINS
+from data.config import BOT_TOKEN, ADMINS, HEROKU_APP_NAME
 import logging
+import os
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from handlers.reg_all import reg_all_handlers
