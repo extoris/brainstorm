@@ -1,4 +1,5 @@
 import asyncio
+from datetime import datetime
 from distutils.command.config import config
 import os
 
@@ -19,10 +20,16 @@ from misc.admin import notify_admin
 token = BOT_TOKEN
 bot = Bot(BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
-logging.basicConfig(level=logging.INFO)
+formatter = '[%(asctime)s] %(levelname)8s --- %(message)s (%(filename)s:%(lineno)s)'
+logging.basicConfig(
+    filename=f'bot-from-{datetime.datetime.now().date()}.log',
+    filemode='w',
+    format=formatter,
+    datefmt='%Y-%m-%d %H:%M:%S',
+    level=logging.WARNING)
+
 scheduler = AsyncIOScheduler(timezone="Europe/Moscow")
 logger = logging.getLogger(__name__)
-
 
 
 # def timer_interval_func():
@@ -61,7 +68,6 @@ async def main():
     finally:
         await bot.close()
     
-
 
 if __name__ == '__main__':
     try:
