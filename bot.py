@@ -22,7 +22,7 @@ bot = Bot(BOT_TOKEN, parse_mode=types.ParseMode.HTML)
 dp = Dispatcher(bot, storage=MemoryStorage())
 formatter = '[%(asctime)s] %(levelname)8s --- %(message)s (%(filename)s:%(lineno)s)'
 logging.basicConfig(
-    filename=f'bot-from-{datetime.datetime.now().date()}.log',
+    filename=f'bot-from-{datetime.now().date()}.log',
     filemode='w',
     format=formatter,
     datefmt='%Y-%m-%d %H:%M:%S',

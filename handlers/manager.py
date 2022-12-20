@@ -12,7 +12,7 @@ from model.state import Exersice
 
 async def manager(message: Message, state: FSMContext):
     #функция по порядку вызывает функции с упражнениями
-    async with state.proxy() as data:        
+    async with state.proxy() as data:
         data['sequence'].pop(0)
         try:
             current_function = data['sequence'][0].get('function')
@@ -46,6 +46,7 @@ async def check_word(message: Message, state: FSMContext, *args):
         data['check_word'].append(set_word)
     await message.answer_voice(set_word[2], f'{set_word[0]} - {set_word[1]}' ,reply_markup=check_word_keyboard)
 
+
 async def check_word_answer(call: CallbackQuery, state: FSMContext, **kwargs):
     if call.data == 'check_word_yes':
         async with state.proxy() as data:
@@ -59,7 +60,8 @@ async def check_word_answer(call: CallbackQuery, state: FSMContext, **kwargs):
         async with state.proxy() as data:
             data['check_word'].pop()
         await call.answer("no!")
-        await check_word(call.message, state)        
+        await check_word(call.message, state)
+
 
 def register_check_word(dp: Dispatcher):
     dp.register_callback_query_handler(check_word_answer, Text(startswith='check_word_'), state=Exersice.check_word)
@@ -84,6 +86,7 @@ async def trans_list_answer(call: CallbackQuery, state: FSMContext):
         await add_mistakes(trans_list, word, state)
         await call.answer("no!")
 
+
 def register_trans_list(dp: Dispatcher):
     dp.register_callback_query_handler(trans_list_answer, Text(startswith='trans_list_'), state=Exersice.trans_list)
 
@@ -94,6 +97,7 @@ async def trans_litters(message: Message, state: FSMContext, word: str):
     await message.answer("перевод по буквам")
     current_word = word
     await message.answer(current_word[1] ,reply_markup=trans_litters_keyboard(current_word[0]))
+
 
 async def trans_litters_answer(call: CallbackQuery, state: FSMContext):
     litter = call.data[-1]
@@ -114,6 +118,7 @@ async def trans_litters_answer(call: CallbackQuery, state: FSMContext):
         await add_mistakes(trans_litters, current_word, state)
         await call.answer('no!')
 
+
 async def update_trans_litters(call: CallbackQuery, current_word: str, litters: str):
     with suppress(MessageNotModified):
         await call.message.edit_text(f'{current_word[1]}\n {str(current_word[0].replace(litters, "", 1))}', reply_markup=trans_litters_keyboard(litters))
@@ -128,6 +133,7 @@ async def trans_voice(message: Message, state: FSMContext, word: str):
     await state.update_data(trans_voice = word)
     current_word = word
     await message.answer_voice(current_word[2])
+
 
 async def trans_voice_answer(message: Message, state: FSMContext):
     answer = message.text.lower()
@@ -153,9 +159,9 @@ async def add_mistakes(exersice, word, state):
             data['sequence'].append(mistake)
 
 
-
 async def incorrect_answer(message: Message, state: FSMContext):
     await message.answer('Используйте клавиатуру на экране')
+
 
 def register_incorrect_answer(dp: Dispatcher):
     dp.register_message_handler(incorrect_answer, state=Exersice.check_word, content_types=ContentTypes.ANY)
